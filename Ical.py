@@ -1,4 +1,5 @@
 import datetime
+import socket
 
 
 class Event:
@@ -37,15 +38,19 @@ END:DAYLIGHT
 END:VTIMEZONE
 """
 
+    number = 0
     for event in events:
         result_str +=\
             'BEGIN:VEVENT\n' +\
+            'UID:%s@dms2pi.%s\n'%(number, socket.getfqdn()) +\
             'SUMMARY:%s\n'%(event.title) +\
             _convert_date_to_ical_kv('DTSTART', event.start) +\
             _convert_date_to_ical_kv('DTEND', event.end) +\
+            _convert_date_to_ical_kv('DTSTAMP', datetime.datetime.now()) +\
             ('LOCATION:%s\n'%(event.location) if event.location is not None and event.location != '' else '') +\
             ('DESCRIPTION::%s\n'%(event.comment) if event.comment is not None and event.comment != '' else '') +\
             'END:VEVENT\n'
+        number += 1
 
     return result_str + 'END:VCALENDAR\n'
 
