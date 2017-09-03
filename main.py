@@ -7,7 +7,8 @@ def fetch_events(uid: str) -> [Event]:
     connection = DhbwMaScheduleConnector(uid)
     base_schedule = DhbwMaScheduleWeek(connection.fetch())
 
-    if base_schedule.extract_course_name() == '':
+    course_name = base_schedule.extract_course_name()
+    if course_name == '':
         raise FileNotFoundError('A Schedule with the given UID does not exist!')
 
     events = base_schedule.extract_events()
