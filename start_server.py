@@ -22,7 +22,7 @@ def serve_ical(uid):
 
     res.headers.set('Content-Disposition', 'attachment; filename="ical.ics"')
     res.headers.set('Filename', 'ical.ics')
-    res.headers.set('Content-Type', 'text/Calendar')
+    res.headers.set('Content-Type', 'text/Calendar; charset=UTF-8')
 
     app.logger.info('Delivering iCal for uid %s.'%(uid))
     return res
