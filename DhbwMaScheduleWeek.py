@@ -33,7 +33,7 @@ class DhbwMaScheduleWeek:
     def extract_next_week_param(self) -> str:
         return self.extract_week_link_param(1)
 
-    def extract_events(self):
+    def extract_events(self) -> [Event]:
         results = []
 
         day_lists = self.soup.find_all('ul', attrs={'data-role' : 'listview'})

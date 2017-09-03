@@ -41,13 +41,13 @@ END:VTIMEZONE
         result_str +=\
             'BEGIN:VEVENT\n' +\
             'SUMMARY:%s\n'%(event.title) +\
-            'DTSTART%s\n'%(_convert_date_to_ical_string(event.start)) +\
-            'DTEND%s\n'%(_convert_date_to_ical_string(event.end)) +\
+            _convert_date_to_ical_kv('DTSTART', event.start) +\
+            _convert_date_to_ical_kv('DTEND', event.end) +\
             ('LOCATION:%s\n'%(event.location) if event.location is not None and event.location != '' else '') +\
             ('DESCRIPTION::%s\n'%(event.comment) if event.comment is not None and event.comment != '' else '') +\
             'END:VEVENT\n'
 
     return result_str + 'END:VCALENDAR\n'
 
-def _convert_date_to_ical_string(date: datetime.datetime):
-    return date.strftime(';TZID=Mannheim:%Y%m%dT%H%M00')
+def _convert_date_to_ical_kv(key: str, date: datetime.datetime):
+    return '%s;TZID=Mannheim:%s\n'%(key, date.strftime('%Y%m%dT%H%M00'))
