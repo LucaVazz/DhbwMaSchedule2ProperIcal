@@ -18,7 +18,7 @@ def serve_ical(uid):
         return
 
     ical_str = generate_ical(events)
-    res = flask.Response(ical_str)
+    res = flask.make_response(ical_str)
 
     res.headers.set('Content-Disposition', 'attachment; filename="ical.ics"')
     res.headers.set('Filename', 'ical.ics')
