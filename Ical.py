@@ -11,15 +11,17 @@ class Event:
         self.end = end
         self.location = location
         self.comment = comment
+        self.alarm_minute_offsets = []
 
 
-def convert_events_to_ical(events: [Event]) -> str:
+def convert_events_to_ical(events: [Event], addTzid: bool = True) -> str:
     result_str = """BEGIN:VCALENDAR
 VERSION:2.0
 METHOD:PUBLISH
 """
 
-    result_str += """BEGIN:VTIMEZONE
+    if addTzid:
+        result_str += """BEGIN:VTIMEZONE
 TZID:Mannheim
 BEGIN:STANDARD
 DTSTART:19961027T0300
@@ -40,19 +42,33 @@ END:VTIMEZONE
 
     number = 0
     for event in events:
+        alarms_str = ''
+        for offset in event.alarm_minute_offsets:
+            alarms_str +=\
+                'BEGIN:VALARM\n' +\
+                'TRIGGER:-PT%sM\n'%(offset) +\
+                'ACTION:DISPLAY\n' +\
+                'DESCRIPTION:%s\n'%(event.title) +\
+                'END:VALARM\n'
+
         result_str +=\
             'BEGIN:VEVENT\n' +\
             'UID:%s@dms2pi.%s\n'%(number, socket.getfqdn()) +\
             'SUMMARY:%s\n'%(event.title) +\
-            _convert_date_to_ical_kv('DTSTART', event.start) +\
-            _convert_date_to_ical_kv('DTEND', event.end) +\
-            _convert_date_to_ical_kv('DTSTAMP', datetime.datetime.now()) +\
+            _convert_date_to_ical_kv('DTSTART', event.start, addTzid) +\
+            _convert_date_to_ical_kv('DTEND', event.end, addTzid) +\
+            _convert_date_to_ical_kv('DTSTAMP', datetime.datetime.now(), addTzid) +\
             ('LOCATION:%s\n'%(event.location) if event.location is not None and event.location != '' else '') +\
             ('DESCRIPTION::%s\n'%(event.comment) if event.comment is not None and event.comment != '' else '') +\
+            alarms_str +\
             'END:VEVENT\n'
         number += 1
 
     return result_str + 'END:VCALENDAR\n'
 
-def _convert_date_to_ical_kv(key: str, date: datetime.datetime):
-    return '%s;TZID=Mannheim:%s\n'%(key, date.strftime('%Y%m%dT%H%M00'))
+def _convert_date_to_ical_kv(key: str, date: datetime.datetime, addTzid: bool = True):
+    return '%s%s:%s\n'%(
+        key,
+        (';TZID=Mannheim' if addTzid else ''),
+        date.strftime('%Y%m%dT%H%M00')
+    )
