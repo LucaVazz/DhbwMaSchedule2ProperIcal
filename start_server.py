@@ -25,7 +25,7 @@ def serve_ical(uid):
         add_alarms_before_start(events, int(alarmOffsetBeforeStart))
 
     doNotAddTz = request.args.get('doNotAddTz')
-    if alarmOffsetBeforeStart is None:
+    if doNotAddTz is not None:
         addTz = False
     else:
         addTz = True
