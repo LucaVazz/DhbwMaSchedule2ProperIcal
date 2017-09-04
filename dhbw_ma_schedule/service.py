@@ -25,7 +25,7 @@ def fetch_events(uid: str) -> [Event]:
 
     last_schedule = current_week_schedule
     for _ in range(17):  # approximately 4 months  (30*4/7=17,1429)
-        next_week_param = last_schedule.extract_previous_week_param()
+        next_week_param = last_schedule.extract_next_week_param()
         schedule = ScheduleWeek(connection.fetch(next_week_param))
         events += schedule.extract_events()
         last_schedule = schedule
