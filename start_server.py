@@ -25,11 +25,11 @@ def serve_ical(uid):
         add_alarms_before_start(events, int(alarmOffsetBeforeStart))
 
     ical_str = generate_ical(events)
-    res = flask.make_response(ical_str)
+    res = flask.make_response(ical_str.encode('utf-8'))
 
-    res.headers.set('Content-Disposition', 'attachment; filename="ical.ics"')
+    res.headers.set('Content-Disposition', 'attachment; filename="ical.ics"; charset=utf-8')
     res.headers.set('Filename', 'ical.ics')
-    res.headers.set('Content-Type', 'text/Calendar; charset=UTF-8')
+    res.headers.set('Content-Type', 'text/Calendar; charset=utf-8')
 
     app.logger.info('Delivering iCal for uid %s.'%(uid))
     return res
