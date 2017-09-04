@@ -18,6 +18,7 @@ def convert_events_to_ical(events: [Event], addTzid: bool = True) -> str:
     result_str = """BEGIN:VCALENDAR
 VERSION:2.0
 METHOD:PUBLISH
+PRODID:-//LUCAVAZZANO.EU//DhbwMaSchedule2ProperIcal//DE
 """
 
     if addTzid:
