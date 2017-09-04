@@ -66,8 +66,8 @@ END:VTIMEZONE
 
     return result_str + 'END:VCALENDAR\n'
 
-def _convert_date_to_ical_kv(key: str, date: datetime.datetime):
+def _convert_date_to_ical_kv(key: str, dateValue: datetime.datetime):
     return '%s;TZID=Mannheim:%s\n'%(
         key,
-        date.strftime('%Y%m%dT%H%M00')
+        dateValue.strftime('%Y%m%dT%H%M00')
     )

@@ -3,7 +3,7 @@ from http.client import HTTPConnection
 from bs4 import BeautifulSoup
 
 
-class DhbwMaScheduleConnector:
+class Connector:
     def __init__(self, uid: str):
         self.uid = uid
 

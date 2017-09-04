@@ -2,10 +2,10 @@ import datetime
 
 from bs4 import BeautifulSoup
 
-from Ical import Event
+from ical_utils import Event
 
 
-class DhbwMaScheduleWeek:
+class ScheduleWeek:
     def __init__(self, soup: BeautifulSoup):
         self.soup = soup
 
@@ -41,7 +41,7 @@ class DhbwMaScheduleWeek:
         for day in day_lists:
             day_details = day.find_all('li')
             date_incomplete_str = day_details[0].text.split(', ')[-1]
-            # -> i.e. `31.08`
+            #                                    ^ -> i.e. `Montag, 31.08`
             day = int(date_incomplete_str.split('.')[0])
             month = int(date_incomplete_str.split('.')[-1])
 
@@ -52,21 +52,25 @@ class DhbwMaScheduleWeek:
             if self.extract_week_no() == 1:
                 if month == 12 and current_month == 1:
                     year = current_year - 1
-                elif month == 1 and current_month > 8:
+                elif month == 1 and current_month > 1:
                     year = current_year + 1
 
-            for event in day_details[1:]:
+            for event in day_details[1:]: # day_details[0] is the "day title"
                 title = event.find('div', class_='cal-title').text
-                location_raw = event.find('div', class_='cal-res')
+
+                location_raw = event.find('div', class_='cal-res')  # possibly non-existent
                 location = location_raw.text if location_raw is not None else None
-                comment_raw = event.find('div', class_='cal-text')
+
+                comment_raw = event.find('div', class_='cal-text')  # possibly non-existent
                 comment = comment_raw.text if comment_raw is not None else None
 
-                possible_time = event.find('div', class_='cal-time')
+                possible_time = event.find('div', class_='cal-time')  # possibly non-existent
                 if possible_time is not None:
+                    # possible_time = i.e. `13:37-14:42`
                     times = possible_time.text.split('-')
                     times[0] = times[0].split(':')
                     times[1] = times[1].split(':')
+                    # -> times[0] = start, times[1] = end ; ...[0] = hour, ...[1] = minute
                     start = datetime.datetime(year, month, day, int(times[0][0]), int(times[0][1]))
                     end = datetime.datetime(year, month, day, int(times[1][0]), int(times[1][1]))
                 else:

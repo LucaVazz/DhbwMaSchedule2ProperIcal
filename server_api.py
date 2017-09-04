@@ -1,9 +1,9 @@
 import sys
 
-import flask
-from flask import Flask, abort, request
+from flask import Flask, abort, request, make_response
 
-from main import fetch_events, generate_ical, add_alarms_for_first_day_event, add_alarms_before_start
+from dhbw_ma_schedule.service import fetch_events, generate_ical, add_alarms_for_first_day_event, add_alarms_before_start
+
 
 app = Flask(__name__)
 
@@ -12,21 +12,21 @@ def serve_ical(uid):
     try:
         events = fetch_events(uid)
     except FileNotFoundError:
-        app.logger.error('uid %s not found!'%(uid))
+        app.logger.error('Aborting request for uid %s, uid not found!'%(uid))
         abort(404)
-        return
+        return  # technically not needed, but PyCharm doesn't know that
 
-    alarmtimeAtDayBefore = request.args.get('alarmtimeAtDayBefore')
+    alarmtimeAtDayBefore = request.args.get('addAlarmtimeAtDayBefore')
     if alarmtimeAtDayBefore is not None:
         add_alarms_for_first_day_event(events, alarmtimeAtDayBefore)
 
-    alarmOffsetBeforeStart = request.args.get('alarmOffsetBeforeStart')
+    alarmOffsetBeforeStart = request.args.get('addAlarmOffsetBeforeStart')
     if alarmOffsetBeforeStart is not None:
         add_alarms_before_start(events, int(alarmOffsetBeforeStart))
 
     ical_str = generate_ical(events)
-    res = flask.make_response(ical_str)
 
+    res = make_response(ical_str)
     res.headers.set('Content-Disposition', 'attachment; filename="ical.ics"; charset=utf-8')
     res.headers.set('Filename', 'ical.ics')
     res.headers.set('Content-Type', 'text/Calendar; charset=utf-8')
@@ -36,5 +36,6 @@ def serve_ical(uid):
 
 
 if __name__ == '__main__':
+    # Executed if run locally (i.e. not via WSGI):
     app.run(debug=('pydevd' in sys.modules))
     #               ^ present if i.e. PyCharm Debugger is attached
