@@ -19,4 +19,4 @@ class DhbwMaScheduleConnector:
         if response_status != 200:
             raise RuntimeError('Server reported Status %s' % (response_status))
 
-        return BeautifulSoup(response.read().decode('iso-8859-1').encode('utf-8'), 'html.parser')
+        return BeautifulSoup(response.read().decode().encode('utf-8'), 'html.parser')
