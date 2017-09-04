@@ -47,7 +47,7 @@ END:VTIMEZONE
             alarms_str +=\
                 'BEGIN:VALARM\n' +\
                 'TRIGGER:-PT%sM\n'%(offset) +\
-                'ACTION:DISPLAY\n' +\
+                'ACTION:AUDIO\n' +\
                 'DESCRIPTION:%s\n'%(event.title) +\
                 'END:VALARM\n'
 
