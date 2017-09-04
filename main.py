@@ -49,5 +49,5 @@ def add_alarms_before_start(events: [Event], offset: int) -> None:
     for event in events:
         event.alarm_minute_offsets.append(offset)
 
-def generate_ical(events: [Event], addTzid: bool = True) -> str:
-    return convert_events_to_ical(events, addTzid)
+def generate_ical(events: [Event]) -> str:
+    return convert_events_to_ical(events)

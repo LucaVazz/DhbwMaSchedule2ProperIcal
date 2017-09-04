@@ -24,13 +24,7 @@ def serve_ical(uid):
     if alarmOffsetBeforeStart is not None:
         add_alarms_before_start(events, int(alarmOffsetBeforeStart))
 
-    doNotAddTz = request.args.get('doNotAddTz')
-    if doNotAddTz is not None:
-        addTz = False
-    else:
-        addTz = True
-
-    ical_str = generate_ical(events, addTz)
+    ical_str = generate_ical(events)
     res = flask.make_response(ical_str)
 
     res.headers.set('Content-Disposition', 'attachment; filename="ical.ics"')

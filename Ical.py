@@ -14,15 +14,14 @@ class Event:
         self.alarm_minute_offsets = []
 
 
-def convert_events_to_ical(events: [Event], addTzid: bool = True) -> str:
+def convert_events_to_ical(events: [Event]) -> str:
     result_str = """BEGIN:VCALENDAR
 VERSION:2.0
 METHOD:PUBLISH
 PRODID:-//LUCAVAZZANO.EU//DhbwMaSchedule2ProperIcal//DE
 """
 
-    if addTzid:
-        result_str += """BEGIN:VTIMEZONE
+    result_str += """BEGIN:VTIMEZONE
 TZID:Mannheim
 BEGIN:STANDARD
 DTSTART:19961027T030000Z
@@ -56,9 +55,9 @@ END:VTIMEZONE
             'BEGIN:VEVENT\n' +\
             'UID:%s@dms2pi.%s\n'%(number, socket.getfqdn()) +\
             'SUMMARY:%s\n'%(event.title) +\
-            _convert_date_to_ical_kv('DTSTART', event.start, addTzid) +\
-            _convert_date_to_ical_kv('DTEND', event.end, addTzid) +\
-            _convert_date_to_ical_kv('DTSTAMP', datetime.datetime.now(), addTzid) +\
+            _convert_date_to_ical_kv('DTSTART', event.start) +\
+            _convert_date_to_ical_kv('DTEND', event.end) +\
+            _convert_date_to_ical_kv('DTSTAMP', datetime.datetime.now()) +\
             ('LOCATION:%s\n'%(event.location) if event.location is not None and event.location != '' else '') +\
             ('DESCRIPTION::%s\n'%(event.comment) if event.comment is not None and event.comment != '' else '') +\
             alarms_str +\
@@ -67,9 +66,8 @@ END:VTIMEZONE
 
     return result_str + 'END:VCALENDAR\n'
 
-def _convert_date_to_ical_kv(key: str, date: datetime.datetime, addTzid: bool = True):
-    return '%s%s:%s\n'%(
+def _convert_date_to_ical_kv(key: str, date: datetime.datetime):
+    return '%s;TZID=Mannheim:%s\n'%(
         key,
-        (';TZID=Mannheim' if addTzid else ''),
         date.strftime('%Y%m%dT%H%M00')
     )
