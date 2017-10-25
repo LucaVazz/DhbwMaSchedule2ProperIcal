@@ -54,12 +54,14 @@ END:VTIMEZONE
         result_str +=\
             'BEGIN:VEVENT\n' +\
             'UID:%s@dms2pi.%s\n'%(number, socket.getfqdn()) +\
-            'SUMMARY;CHARSET=UTF-8:%s\n'%(event.title) +\
+            'SUMMARY;CHARSET=UTF-8:%s\n'%(sanitize_for_ical(event.title)) +\
             _convert_date_to_ical_kv('DTSTART', event.start) +\
             _convert_date_to_ical_kv('DTEND', event.end) +\
             _convert_date_to_ical_kv('DTSTAMP', datetime.datetime.now()) +\
-            ('LOCATION;CHARSET=UTF-8:%s\n'%(event.location) if event.location is not None and event.location != '' else '') +\
-            ('DESCRIPTION;CHARSET=UTF-8::%s\n'%(event.comment) if event.comment is not None and event.comment != '' else '') +\
+            ('LOCATION;CHARSET=UTF-8:%s\n'%(sanitize_for_ical(event.location)) if
+                event.location is not None and event.location != '' else '') +\
+            ('DESCRIPTION;CHARSET=UTF-8:%s\n'%(sanitize_for_ical(event.comment)) if
+                event.comment is not None and event.comment != '' else '') +\
             alarms_str +\
             'END:VEVENT\n'
         number += 1
@@ -71,3 +73,6 @@ def _convert_date_to_ical_kv(key: str, dateValue: datetime.datetime):
         key,
         dateValue.strftime('%Y%m%dT%H%M00')
     )
+
+def sanitize_for_ical(text: str) -> str:
+    return text.replace('\\', '/').replace('\r\n', '\\n').replace('\n', '\\n')
