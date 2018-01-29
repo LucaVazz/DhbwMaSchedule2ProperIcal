@@ -1,4 +1,4 @@
-from http.client import HTTPConnection
+from http.client import HTTPSConnection
 
 from bs4 import BeautifulSoup
 
@@ -8,7 +8,7 @@ class Connector:
         self.uid = uid
 
     def fetch(self, date: str = '') -> BeautifulSoup:
-        connection = HTTPConnection('vorlesungsplan.dhbw-mannheim.de')
+        connection = HTTPSConnection('vorlesungsplan.dhbw-mannheim.de')
         connection.request(
             'GET',
             '/index.php?action=view&uid=%s&date=%s'%(self.uid, date)

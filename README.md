@@ -19,7 +19,7 @@
 `<..>/<uid>`
 - Method: HTTP-GET
 - Optional parameters:
-    - `addAlarmtimeAtDayBefore=<time>`: `time` is a string like `1900`, where the first two chars specify the hour adn the last two the minute of the time for which the alarm should be set
+    - `addAlarmtimeAtDayBefore=<time>`: `time` is a string like `1900`, where the first two chars specify the hour and the last two the minute of the time for which the alarm should be set
     - `addAlarmOffsetBeforeStart=<offset>`: `offset` is specified in minutes
 - Examples:
     - `http://dhbw-schedule.lucavazzano.eu/6705001`
